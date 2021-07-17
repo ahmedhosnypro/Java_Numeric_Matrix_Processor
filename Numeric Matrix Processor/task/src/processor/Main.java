@@ -1,18 +1,14 @@
 package processor;
 
-import java.util.Objects;
+import java.util.Scanner;
 
 public class Main {
+    static Scanner  scanner = new Scanner(System.in);
+
     public static void main(String[] args) {
         Matrix A = new Matrix();
-        Matrix B = new Matrix();
+        int scalar = scanner.nextInt();
         System.out.println();
-        Matrix sum = A.add(B);
-        if (Objects.nonNull(sum.matrix)){
-            System.out.println(sum);
-        }
-        else{
-            System.out.println("ERROR");
-        }
+        System.out.println(A.multiByNum(scalar));
     }
 }

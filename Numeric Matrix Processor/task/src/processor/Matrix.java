@@ -35,7 +35,7 @@ public class Matrix {
     }
 
     public Matrix add(Matrix matrixB) {
-        Matrix out = new Matrix(this.row, this.column);
+        Matrix out = new Matrix(row, column);
         if (row == matrixB.row && column == matrixB.column) {
             out.matrix = new int[row][column];
             for (int i = 0; i < row; i++) {
@@ -58,5 +58,16 @@ public class Matrix {
             out.append('\n');
         }
         return out.toString().trim();
+    }
+
+    public Matrix multiByNum(int scalar){
+        Matrix out = new Matrix(row, column);
+        out.matrix = new int[row][column];
+        for(int i=0; i<row; i++){
+            for (int j=0; j<column; j++){
+                out.matrix[i][j] = matrix[i][j] * scalar;
+            }
+        }
+        return out;
     }
 }
