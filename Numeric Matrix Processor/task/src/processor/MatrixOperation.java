@@ -87,6 +87,23 @@ public class MatrixOperation {
                 break;
         }
     }
+
+    public static void determinant(){
+        System.out.print("Enter matrix size: ");
+        int[] A_dimensions = getDimensions();
+        System.out.println("Enter matrix:");
+        double[][] matrixA = matrixArray(A_dimensions[0], A_dimensions[1]);
+        Matrix A = new Matrix(A_dimensions[0], A_dimensions[1], matrixA);
+
+        System.out.println("The result is:");
+        double determinant = A.Determinant();
+        int integer = (int) determinant;
+        double decimalSection = determinant - integer;
+        if (decimalSection>0)
+            System.out.println(determinant);
+        else
+            System.out.println(integer);
+    }
     private static double num() {
         double scalar;
         try {
@@ -98,9 +115,6 @@ public class MatrixOperation {
             return num();
         }
     }
-
-
-
 
     private static int[] getDimensions() {
         int[] dimensions = new int[2];

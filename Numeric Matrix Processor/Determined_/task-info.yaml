@@ -435,6 +435,422 @@ files:
 
     }
   learner_created: false
+- name: src/processor/Matrix.java
+  visible: true
+  text: |
+    package processor;
+
+    import java.util.Scanner;
+
+    public class Matrix {
+        private int row;
+        private int column;
+        private double[][] matrix;
+
+        public Matrix(int row, int column) {
+            this.row = row;
+            this.column = column;
+        }
+
+        public Matrix(int row, int column, double[][] matrix) {
+            this.row = row;
+            this.column = column;
+            this.matrix = matrix;
+        }
+
+        public Matrix() {
+            Scanner scanner = new Scanner(System.in);
+            try {
+                String[] dimension = scanner.nextLine().trim().split(" ");
+                this.row = Integer.parseInt(dimension[0]);
+                this.column = Integer.parseInt(dimension[1]);
+                String[][] numbs = new String[row][column];
+                for (int i = 0; i < row; i++) {
+                    numbs[i] = scanner.nextLine().trim().split(" ");
+                }
+
+                matrix = new double[row][column];
+                for (int i = 0; i < row; i++) {
+                    for (int j = 0; j < column; j++) {
+                        matrix[i][j] = Double.parseDouble(numbs[i][j]);
+                    }
+                }
+            } catch (IllegalArgumentException e) {
+                System.out.println(e.getMessage());
+            }
+        }
+
+        public double[][] getMatrix() {
+            return matrix;
+        }
+
+        public Matrix add(Matrix matrixB) {
+            Matrix out = new Matrix(row, column);
+            if (row == matrixB.row && column == matrixB.column) {
+                out.matrix = new double[row][column];
+                for (int i = 0; i < row; i++) {
+                    for (int j = 0; j < column; j++) {
+                        out.matrix[i][j] = matrix[i][j] + matrixB.matrix[i][j];
+                    }
+                }
+            }
+            return out;
+        }
+
+        @Override
+        public String toString() {
+            StringBuilder out = new StringBuilder();
+
+            boolean isFloat = false;
+            for (int i = 0; i < row; i++) {
+                for (int j = 0; j < column; j++) {
+                    int integer = (int) matrix[i][j];
+                    double decimalSection = matrix[i][j] - integer;
+                    if (decimalSection > 0) {
+                        isFloat = true;
+                        break;
+                    }
+                }
+            }
+            for (int i = 0; i < row; i++) {
+                for (int j = 0; j < column; j++) {
+                    int integer = (int) matrix[i][j];
+                    if (isFloat) {
+                        out.append(matrix[i][j]).append(" ");
+                    } else {
+                        out.append(integer).append(" ");
+                    }
+
+                }
+                out.delete(out.length() - 1, out.length());
+                out.append('\n');
+            }
+            return out.toString().trim();
+        }
+
+        public Matrix multiByNum(double scalar) {
+            Matrix out = new Matrix(row, column);
+            out.matrix = new double[row][column];
+            for (int i = 0; i < row; i++) {
+                for (int j = 0; j < column; j++) {
+                    out.matrix[i][j] = matrix[i][j] * scalar;
+                }
+            }
+            return out;
+        }
+
+        public Matrix multiply(Matrix matrix) {
+            Matrix out = new Matrix(row, matrix.column);
+            if (column == matrix.row) {
+                out.matrix = new double[row][matrix.column];
+                //A(rowA,colmA) * B(row2,p)
+                int rowA = 0;
+                while (rowA < row) {
+                    int colmB = 0;
+                    while (colmB < matrix.column) {
+                        int n = 0;
+                        while (n < column) {
+                            double n1 = this.matrix[rowA][n];
+                            double n2 = matrix.matrix[n][colmB];
+                            out.matrix[rowA][colmB] += n1 * n2;
+                            n++;
+                        }
+                        colmB++;
+                    }
+                    rowA++;
+                }
+            }//end if
+            return out;
+        }
+
+        public Matrix mainDiagonalTranspose() {
+            Matrix out = new Matrix(row, column);
+            out.matrix = new double[row][column];
+            for (int i = 0; i < row; i++) {
+                for (int j = 0; j < column; j++) {
+                    out.matrix[i][j] = this.matrix[j][i];
+                }
+            }
+            return out;
+        }
+
+        public Matrix sideDiagonalTranspose() {
+            Matrix out = new Matrix(row, column);
+            out.matrix = new double[row][column];
+            int i = row - 1;
+            int k = 0;
+            while (i >= 0) {
+                int j = column - 1;
+                int l = 0;
+                while (j >= 0) {
+                    out.matrix[l][k] = this.matrix[i][j];
+                    j--;
+                    l++;
+                }
+                i--;
+                k++;
+            }
+
+            return out;
+        }
+
+        public Matrix verticalLineTranspose() {
+            Matrix out = new Matrix(row, column);
+            out.matrix = new double[row][column];
+            int i = 0;
+
+
+            while (i < row) {
+                int j = column - 1;
+                int k = 0;
+                while (j >= 0) {
+                    out.matrix[i][k] = this.matrix[i][j];
+                    j--;
+                    k++;
+                }
+                i++;
+            }
+            return out;
+        }
+
+        public Matrix horizontalLineTranspose() {
+            Matrix out = new Matrix(row, column);
+            out.matrix = new double[row][column];
+            int i = row - 1;
+            int k = 0;
+            while (i >= 0) {
+                int j = 0;
+                while (j < column) {
+                    out.matrix[k][j] = this.matrix[i][j];
+                    j++;
+                }
+                i--;
+                k++;
+            }
+            return out;
+        }
+
+    }
+  learner_created: true
+- name: src/processor/Menu.java
+  visible: true
+  text: |
+    package processor;
+
+    import java.util.Scanner;
+
+    import static processor.MatrixOperation.*;
+
+    public class Menu {
+        static Scanner scanner = new Scanner(System.in);
+
+        public static boolean menu() {
+            boolean isContinue = true;
+            System.out.println();
+            System.out.println("1. Add matrices\n" +
+                    "2. Multiply matrix by a constant\n" +
+                    "3. Multiply matrices\n" +
+                    "4. Transpose matrix\n" +
+                    "0. Exit");
+            System.out.print("Your choice: ");
+            switch (choose()) {
+                case 1:
+                    addMatrices();
+                    break;
+                case 2:
+                    multiByNum();
+                    break;
+                case 3:
+                    multiplyMatrices();
+                    break;
+                case 4:
+                    transpositionMenu();
+                    break;
+                case 0:
+                default:
+                    isContinue = false;
+                    break;
+            }
+            return isContinue;
+        }
+
+        public static void transpositionMenu() {
+            System.out.println();
+            System.out.println("1. Main diagonal\n" +
+                    "2. Side diagonal\n" +
+                    "3. Vertical line\n" +
+                    "4. Horizontal line");
+            System.out.print("Your choice: ");
+            int choice = choose();
+            switch (choice) {
+                case 1:
+                case 2:
+                case 3:
+                case 4:
+                    transposeMatrix(choice);
+                default:
+                    break;
+            }
+        }
+
+        private static int choose() {
+            try {
+                int choice = Integer.parseInt(scanner.nextLine().trim());
+                return choice;
+            } catch (IllegalArgumentException e) {
+                System.out.println("check input");
+                System.out.print("Your choice: ");
+                return choose();
+            }
+        }
+    }
+  learner_created: true
+- name: src/processor/MatrixOperation.java
+  visible: true
+  text: |
+    package processor;
+
+    import java.util.Scanner;
+
+    public class MatrixOperation {
+        static Scanner scanner = new Scanner(System.in);
+
+        public static void addMatrices() {
+            System.out.print("Enter size of first matrix: ");
+            int[] A_dimensions = getDimensions();
+            System.out.println("Enter first matrix:");
+            double[][] matrixA = matrixArray(A_dimensions[0], A_dimensions[1]);
+            Matrix A = new Matrix(A_dimensions[0], A_dimensions[1], matrixA);
+
+            System.out.print("Enter size of second matrix: ");
+            int[] B_dimensions = getDimensions();
+            System.out.println("Enter second matrix:");
+            double[][] matrixB = matrixArray(B_dimensions[0], B_dimensions[1]);
+            Matrix B = new Matrix(B_dimensions[0], B_dimensions[1], matrixB);
+
+            if (A_dimensions[0] == B_dimensions[0] && A_dimensions[1] == B_dimensions[1]) {
+                System.out.println("The result is:");
+                System.out.println(A.add(B));
+            }
+            else{
+                System.out.println("The operation cannot be performed.");
+            }
+        }
+
+        public static void multiByNum() {
+            System.out.print("Enter size of matrix: ");
+            int[] A_dimensions = getDimensions();
+            System.out.println("Enter matrix:");
+            double[][] matrixA = matrixArray(A_dimensions[0], A_dimensions[1]);
+            Matrix A = new Matrix(A_dimensions[0], A_dimensions[1], matrixA);
+            System.out.print("Enter constant: ");
+            double constant = num();
+
+            System.out.println("The result is:");
+            System.out.println(A.multiByNum(constant));
+        }
+
+        public static void multiplyMatrices() {
+            System.out.print("Enter size of first matrix: ");
+            int[] A_dimensions = getDimensions();
+            System.out.println("Enter first matrix:");
+            double[][] matrixA = matrixArray(A_dimensions[0], A_dimensions[1]);
+            Matrix A = new Matrix(A_dimensions[0], A_dimensions[1], matrixA);
+
+            System.out.print("Enter size of second matrix: ");
+            int[] B_dimensions = getDimensions();
+            System.out.println("Enter second matrix:");
+            double[][] matrixB = matrixArray(B_dimensions[0], B_dimensions[1]);
+            Matrix B = new Matrix(B_dimensions[0], B_dimensions[1], matrixB);
+
+            if (A_dimensions[1] == B_dimensions[0]) {
+                System.out.println("The result is:");
+                System.out.println(A.multiply(B));
+            }
+            else{
+                System.out.println("The operation cannot be performed.");
+            }
+        }
+
+        public static void transposeMatrix(int choice){
+            System.out.print("Enter matrix size: ");
+            int[] A_dimensions = getDimensions();
+            System.out.println("Enter matrix:");
+            double[][] matrixA = matrixArray(A_dimensions[0], A_dimensions[1]);
+            Matrix A = new Matrix(A_dimensions[0], A_dimensions[1], matrixA);
+
+            System.out.println("The result is:");
+            switch (choice) {
+                case 1:
+                    System.out.println(A.mainDiagonalTranspose());
+                    break;
+                case 2:
+                    System.out.println(A.sideDiagonalTranspose());
+                    break;
+                case 3:
+                    System.out.println(A.verticalLineTranspose());
+                    break;
+                case 4:
+                    System.out.println(A.horizontalLineTranspose());
+                    break;
+                default:
+                    break;
+            }
+        }
+        private static double num() {
+            double scalar;
+            try {
+                scalar = Double.parseDouble(scanner.nextLine().trim());
+                return scalar;
+            } catch (Exception e) {
+                System.out.println("check input");
+                System.out.print("Enter constant: ");
+                return num();
+            }
+        }
+
+
+
+
+        private static int[] getDimensions() {
+            int[] dimensions = new int[2];
+            try {
+                String[] dimension = scanner.nextLine().trim().split(" ");
+                dimensions[0] = Integer.parseInt(dimension[0]);
+                dimensions[1] = Integer.parseInt(dimension[1]);
+                return dimensions;
+            } catch (Exception e) {
+                System.out.println("check input");
+                System.out.print("Enter size of matrix: ");
+                getDimensions();
+                return getDimensions();
+            }
+        }
+
+        private static double[][] matrixArray(int row, int column) {
+            double[][] matrix = new double[row][column];
+            try {
+                String[][] numbs = new String[row][column];
+                for (int i = 0; i < row; i++) {
+                    numbs[i] = scanner.nextLine().trim().split(" ");
+                }
+                for (int i = 0; i < row; i++) {
+                    for (int j = 0; j < column; j++) {
+                        matrix[i][j] = Double.parseDouble(numbs[i][j]);
+                    }
+                }
+                return matrix;
+            } catch (Exception e) {
+                System.out.println("check input");
+                System.out.println("Enter matrix:");
+                return matrixArray(row, column);
+            }
+        }
+    }
+  learner_created: true
 feedback_link: https://hyperskill.org/projects/60/stages/327/implement#comment
-status: Unchecked
+status: Solved
+feedback:
+  message: Congratulations!
+  time: Sun, 18 Jul 2021 02:29:19 UTC
 record: -1

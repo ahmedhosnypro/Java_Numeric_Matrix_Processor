@@ -14,6 +14,7 @@ public class Menu {
                 "2. Multiply matrix by a constant\n" +
                 "3. Multiply matrices\n" +
                 "4. Transpose matrix\n" +
+                "5. Calculate a determinant\n" +
                 "0. Exit");
         System.out.print("Your choice: ");
         switch (choose()) {
@@ -28,6 +29,9 @@ public class Menu {
                 break;
             case 4:
                 transpositionMenu();
+                break;
+            case 5:
+                determinant();
                 break;
             case 0:
             default:
