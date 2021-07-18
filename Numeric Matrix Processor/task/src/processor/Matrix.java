@@ -1,11 +1,12 @@
 package processor;
 
-import java.util.Scanner;
 
 public class Matrix {
-    private int row;
-    private int column;
+    private final int row;
+    private final int column;
+    private double Determinant;
     private double[][] matrix;
+    private double[][] inverse;
     private int iDF = 0;
 
     public Matrix(int row, int column) {
@@ -19,32 +20,19 @@ public class Matrix {
         this.matrix = matrix;
     }
 
-    public Matrix() {
-        Scanner scanner = new Scanner(System.in);
-        try {
-            String[] dimension = scanner.nextLine().trim().split(" ");
-            this.row = Integer.parseInt(dimension[0]);
-            this.column = Integer.parseInt(dimension[1]);
-            String[][] numbs = new String[row][column];
-            for (int i = 0; i < row; i++) {
-                numbs[i] = scanner.nextLine().trim().split(" ");
-            }
-
-            matrix = new double[row][column];
-            for (int i = 0; i < row; i++) {
-                for (int j = 0; j < column; j++) {
-                    matrix[i][j] = Double.parseDouble(numbs[i][j]);
-                }
-            }
-        } catch (IllegalArgumentException e) {
-            System.out.println(e.getMessage());
-        }
+    //getters
+    public double getDeterminant() {
+        Determinant = calcDeterminant(matrix);
+        return Determinant;
     }
 
-    public double[][] getMatrix() {
-        return matrix;
+    public double[][] getInverse() {
+        Determinant = calcDeterminant(matrix);
+        calcInverse();
+        return inverse;
     }
 
+    //operations
     public Matrix add(Matrix matrixB) {
         Matrix out = new Matrix(row, column);
         if (row == matrixB.row && column == matrixB.column) {
@@ -56,37 +44,6 @@ public class Matrix {
             }
         }
         return out;
-    }
-
-    @Override
-    public String toString() {
-        StringBuilder out = new StringBuilder();
-
-        boolean isFloat = false;
-        for (int i = 0; i < row; i++) {
-            for (int j = 0; j < column; j++) {
-                int integer = (int) matrix[i][j];
-                double decimalSection = matrix[i][j] - integer;
-                if (decimalSection > 0) {
-                    isFloat = true;
-                    break;
-                }
-            }
-        }
-        for (int i = 0; i < row; i++) {
-            for (int j = 0; j < column; j++) {
-                int integer = (int) matrix[i][j];
-                if (isFloat) {
-                    out.append(matrix[i][j]).append(" ");
-                } else {
-                    out.append(integer).append(" ");
-                }
-
-            }
-            out.delete(out.length() - 1, out.length());
-            out.append('\n');
-        }
-        return out.toString().trim();
     }
 
     public Matrix multiByNum(double scalar) {
@@ -191,6 +148,20 @@ public class Matrix {
         return out;
     }
 
+    private double calcDeterminant(double[][] matrix) {
+        double det = 1;
+
+        matrix = UpperTriangle(matrix);
+
+        for (int i = 0; i < matrix.length; i++) {
+            det = det * matrix[i][i];
+        } // multiply down diagonal
+
+        det = det * iDF; // adjust w/ determinant factor
+
+        return det;
+    }
+
     public double[][] UpperTriangle(double[][] m) {
 
         double f1;
@@ -241,22 +212,117 @@ public class Matrix {
         return m;
     }
 
+    public void calcInverse() {
+        inverse = new double[row][row];
+        double[][] mm = Adjoint(matrix);
+        for (int i = 0; i < row; i++)
+            for (int j = 0; j < row; j++)
+                inverse[i][j] = (1 / Determinant) * mm[i][j];
 
-    public double Determinant() {
+    }
 
-        int tms = matrix.length;
+    public double[][] Adjoint(double[][] a) {
+        int tms = a.length;
 
-        double det = 1;
+        double[][] m = new double[tms][tms];
 
-        matrix = UpperTriangle(matrix);
+        int ii, jj, ia, ja;
+        double det;
 
-        for (int i = 0; i < tms; i++) {
-            det = det * matrix[i][i];
-        } // multiply down diagonal
+        for (int i = 0; i < tms; i++)
+            for (int j = 0; j < tms; j++) {
+                ia = ja = 0;
 
-        det = det * iDF; // adjust w/ determinant factor
+                double[][] ap = new double[tms - 1][tms - 1];
 
-        return det;
+                for (ii = 0; ii < tms; ii++) {
+                    for (jj = 0; jj < tms; jj++) {
+
+                        if ((ii != i) && (jj != j)) {
+                            ap[ia][ja] = a[ii][jj];
+                            ja++;
+                        }
+
+                    }
+                    if ((ii != i) && (jj != j)) {
+                        ia++;
+                    }
+                    ja = 0;
+                }
+
+                det = calcDeterminant(ap);
+                m[i][j] = (float) Math.pow(-1, i + j) * det;
+            }
+
+        m = Transpose(m);
+
+        return m;
+    }
+
+    public double[][] Transpose(double[][] a) {
+        double[][] m = new double[a[0].length][a.length];
+
+        for (int i = 0; i < a.length; i++)
+            for (int j = 0; j < a[i].length; j++)
+                m[j][i] = a[i][j];
+        return m;
+    }
+    static void getCofactor(int A[][], int temp[][], int p, int q, int n)
+    {
+        int i = 0, j = 0;
+
+        // Looping for each element of the matrix
+        for (int row = 0; row < n; row++)
+        {
+            for (int col = 0; col < n; col++)
+            {
+                // Copying into temporary matrix only those element
+                // which are not in given row and column
+                if (row != p && col != q)
+                {
+                    temp[i][j++] = A[row][col];
+
+                    // Row is filled, so increase row index and
+                    // reset col index
+                    if (j == n - 1)
+                    {
+                        j = 0;
+                        i++;
+                    }
+                }
+            }
+        }
+    }
+
+    @Override
+    public String toString() {
+        StringBuilder out = new StringBuilder();
+
+        boolean isFloat = false;
+        for (int i = 0; i < row; i++) {
+            for (int j = 0; j < column; j++) {
+                int integer = (int) matrix[i][j];
+                double decimalSection = matrix[i][j] - integer;
+                if (decimalSection > 0) {
+                    isFloat = true;
+                    break;
+                }
+            }
+        }
+        for (int i = 0; i < row; i++) {
+            for (int j = 0; j < column; j++) {
+                int integer = (int) matrix[i][j];
+                if (isFloat) {
+                    out.append(matrix[i][j]).append(" ");
+                } else {
+                    out.append(integer).append(" ");
+                }
+
+            }
+            out.delete(out.length() - 1, out.length());
+            out.append('\n');
+        }
+        return out.toString().trim();
     }
 
 }

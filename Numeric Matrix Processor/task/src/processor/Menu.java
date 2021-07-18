@@ -15,6 +15,7 @@ public class Menu {
                 "3. Multiply matrices\n" +
                 "4. Transpose matrix\n" +
                 "5. Calculate a determinant\n" +
+                "6. Inverse matrix\n" +
                 "0. Exit");
         System.out.print("Your choice: ");
         switch (choose()) {
@@ -32,6 +33,9 @@ public class Menu {
                 break;
             case 5:
                 determinant();
+                break;
+            case 6:
+                inversion();
                 break;
             case 0:
             default:

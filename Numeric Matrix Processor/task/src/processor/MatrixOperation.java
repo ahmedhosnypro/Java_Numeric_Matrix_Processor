@@ -1,6 +1,7 @@
 package processor;
 
 import java.util.Scanner;
+import Jama.Matrix;
 
 public class MatrixOperation {
     static Scanner scanner = new Scanner(System.in);
@@ -10,13 +11,13 @@ public class MatrixOperation {
         int[] A_dimensions = getDimensions();
         System.out.println("Enter first matrix:");
         double[][] matrixA = matrixArray(A_dimensions[0], A_dimensions[1]);
-        Matrix A = new Matrix(A_dimensions[0], A_dimensions[1], matrixA);
+        processor.Matrix A = new processor.Matrix(A_dimensions[0], A_dimensions[1], matrixA);
 
         System.out.print("Enter size of second matrix: ");
         int[] B_dimensions = getDimensions();
         System.out.println("Enter second matrix:");
         double[][] matrixB = matrixArray(B_dimensions[0], B_dimensions[1]);
-        Matrix B = new Matrix(B_dimensions[0], B_dimensions[1], matrixB);
+        processor.Matrix B = new processor.Matrix(B_dimensions[0], B_dimensions[1], matrixB);
 
         if (A_dimensions[0] == B_dimensions[0] && A_dimensions[1] == B_dimensions[1]) {
             System.out.println("The result is:");
@@ -32,7 +33,7 @@ public class MatrixOperation {
         int[] A_dimensions = getDimensions();
         System.out.println("Enter matrix:");
         double[][] matrixA = matrixArray(A_dimensions[0], A_dimensions[1]);
-        Matrix A = new Matrix(A_dimensions[0], A_dimensions[1], matrixA);
+        processor.Matrix A = new processor.Matrix(A_dimensions[0], A_dimensions[1], matrixA);
         System.out.print("Enter constant: ");
         double constant = num();
 
@@ -45,13 +46,13 @@ public class MatrixOperation {
         int[] A_dimensions = getDimensions();
         System.out.println("Enter first matrix:");
         double[][] matrixA = matrixArray(A_dimensions[0], A_dimensions[1]);
-        Matrix A = new Matrix(A_dimensions[0], A_dimensions[1], matrixA);
+        processor.Matrix A = new processor.Matrix(A_dimensions[0], A_dimensions[1], matrixA);
 
         System.out.print("Enter size of second matrix: ");
         int[] B_dimensions = getDimensions();
         System.out.println("Enter second matrix:");
         double[][] matrixB = matrixArray(B_dimensions[0], B_dimensions[1]);
-        Matrix B = new Matrix(B_dimensions[0], B_dimensions[1], matrixB);
+        processor.Matrix B = new processor.Matrix(B_dimensions[0], B_dimensions[1], matrixB);
 
         if (A_dimensions[1] == B_dimensions[0]) {
             System.out.println("The result is:");
@@ -67,7 +68,7 @@ public class MatrixOperation {
         int[] A_dimensions = getDimensions();
         System.out.println("Enter matrix:");
         double[][] matrixA = matrixArray(A_dimensions[0], A_dimensions[1]);
-        Matrix A = new Matrix(A_dimensions[0], A_dimensions[1], matrixA);
+        processor.Matrix A = new processor.Matrix(A_dimensions[0], A_dimensions[1], matrixA);
 
         System.out.println("The result is:");
         switch (choice) {
@@ -93,16 +94,30 @@ public class MatrixOperation {
         int[] A_dimensions = getDimensions();
         System.out.println("Enter matrix:");
         double[][] matrixA = matrixArray(A_dimensions[0], A_dimensions[1]);
-        Matrix A = new Matrix(A_dimensions[0], A_dimensions[1], matrixA);
+        processor.Matrix A = new processor.Matrix(A_dimensions[0], A_dimensions[1], matrixA);
 
         System.out.println("The result is:");
-        double determinant = A.Determinant();
+        double determinant = A.getDeterminant();
         int integer = (int) determinant;
         double decimalSection = determinant - integer;
         if (decimalSection>0)
             System.out.println(determinant);
         else
             System.out.println(integer);
+    }
+
+    public static void inversion(){
+        System.out.print("Enter matrix size: ");
+        int[] A_dimensions = getDimensions();
+        System.out.println("Enter matrix:");
+        double[][] matrixA = matrixArray(A_dimensions[0], A_dimensions[1]);
+        Jama.Matrix A = new Jama.Matrix(matrixA);
+
+
+        System.out.println("The result is:");
+        Jama.Matrix B = A.inverse();
+
+        System.out.println(Printer.toArray(B.getArrayCopy()));
     }
     private static double num() {
         double scalar;
