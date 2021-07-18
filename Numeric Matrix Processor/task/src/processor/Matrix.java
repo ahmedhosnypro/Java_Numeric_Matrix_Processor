@@ -99,7 +99,7 @@ public class Matrix {
         return out;
     }
 
-    public Matrix multi(Matrix matrix) {
+    public Matrix multiply(Matrix matrix) {
         Matrix out = new Matrix(row, matrix.column);
         if (column == matrix.row) {
             out.matrix = new double[row][matrix.column];
@@ -122,4 +122,72 @@ public class Matrix {
         }//end if
         return out;
     }
+
+    public Matrix mainDiagonalTranspose() {
+        Matrix out = new Matrix(row, column);
+        out.matrix = new double[row][column];
+        for (int i = 0; i < row; i++) {
+            for (int j = 0; j < column; j++) {
+                out.matrix[i][j] = this.matrix[j][i];
+            }
+        }
+        return out;
+    }
+
+    public Matrix sideDiagonalTranspose() {
+        Matrix out = new Matrix(row, column);
+        out.matrix = new double[row][column];
+        int i = row - 1;
+        int k = 0;
+        while (i >= 0) {
+            int j = column - 1;
+            int l = 0;
+            while (j >= 0) {
+                out.matrix[l][k] = this.matrix[i][j];
+                j--;
+                l++;
+            }
+            i--;
+            k++;
+        }
+
+        return out;
+    }
+
+    public Matrix verticalLineTranspose() {
+        Matrix out = new Matrix(row, column);
+        out.matrix = new double[row][column];
+        int i = 0;
+
+
+        while (i < row) {
+            int j = column - 1;
+            int k = 0;
+            while (j >= 0) {
+                out.matrix[i][k] = this.matrix[i][j];
+                j--;
+                k++;
+            }
+            i++;
+        }
+        return out;
+    }
+
+    public Matrix horizontalLineTranspose() {
+        Matrix out = new Matrix(row, column);
+        out.matrix = new double[row][column];
+        int i = row - 1;
+        int k = 0;
+        while (i >= 0) {
+            int j = 0;
+            while (j < column) {
+                out.matrix[k][j] = this.matrix[i][j];
+                j++;
+            }
+            i--;
+            k++;
+        }
+        return out;
+    }
+
 }

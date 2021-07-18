@@ -13,6 +13,7 @@ public class Menu {
         System.out.println("1. Add matrices\n" +
                 "2. Multiply matrix by a constant\n" +
                 "3. Multiply matrices\n" +
+                "4. Transpose matrix\n" +
                 "0. Exit");
         System.out.print("Your choice: ");
         switch (choose()) {
@@ -25,6 +26,9 @@ public class Menu {
             case 3:
                 multiplyMatrices();
                 break;
+            case 4:
+                transpositionMenu();
+                break;
             case 0:
             default:
                 isContinue = false;
@@ -33,16 +37,32 @@ public class Menu {
         return isContinue;
     }
 
-    private static int choose() {
-        int choice = -1;
-        try {
-            choice = Integer.parseInt(scanner.nextLine().trim());
-        } catch (IllegalArgumentException ignore) {
+    public static void transpositionMenu() {
+        System.out.println();
+        System.out.println("1. Main diagonal\n" +
+                "2. Side diagonal\n" +
+                "3. Vertical line\n" +
+                "4. Horizontal line");
+        System.out.print("Your choice: ");
+        int choice = choose();
+        switch (choice) {
+            case 1:
+            case 2:
+            case 3:
+            case 4:
+                transposeMatrix(choice);
+            default:
+                break;
         }
-        if (choice >= 0 && choice <= 3) {
+    }
+
+    private static int choose() {
+        try {
+            int choice = Integer.parseInt(scanner.nextLine().trim());
             return choice;
-        } else {
+        } catch (IllegalArgumentException e) {
             System.out.println("check input");
+            System.out.print("Your choice: ");
             return choose();
         }
     }
