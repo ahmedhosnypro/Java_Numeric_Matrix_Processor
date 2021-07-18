@@ -1,7 +1,6 @@
 package processor;
 
 import java.util.Scanner;
-import Jama.Matrix;
 
 public class MatrixOperation {
     static Scanner scanner = new Scanner(System.in);
