@@ -294,7 +294,7 @@ files:
   learner_created: false
 - name: src/processor/Matrix.java
   visible: true
-  text: |
+  text: |-
     package processor;
 
     import java.util.Scanner;
@@ -357,11 +357,11 @@ files:
             return out.toString().trim();
         }
 
-        public Matrix multiByNum(int scalar){
+        public Matrix multiByNum(int scalar) {
             Matrix out = new Matrix(row, column);
             out.matrix = new int[row][column];
-            for(int i=0; i<row; i++){
-                for (int j=0; j<column; j++){
+            for (int i = 0; i < row; i++) {
+                for (int j = 0; j < column; j++) {
                     out.matrix[i][j] = matrix[i][j] * scalar;
                 }
             }
@@ -375,9 +375,9 @@ files:
 - name: src/processor/MatrixOperation.java
   visible: true
   learner_created: true
-feedback_link: https://hyperskill.org/projects/60/stages/325/implement#comment
+feedback_link: https://hyperskill.org/learn/step/5467#comment
 status: Solved
 feedback:
   message: Congratulations!
-  time: Sat, 17 Jul 2021 22:34:46 UTC
+  time: Sun, 06 Feb 2022 19:02:27 UTC
 record: 3

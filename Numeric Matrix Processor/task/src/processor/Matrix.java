@@ -4,7 +4,9 @@ package processor;
 public class Matrix {
     private final int row;
     private final int column;
+    private double Determinant;
     private double[][] matrix;
+    private double[][] inverse;
     private int iDF = 0;
 
     public Matrix(int row, int column) {
@@ -20,7 +22,14 @@ public class Matrix {
 
     //getters
     public double getDeterminant() {
-        return calcDeterminant(matrix);
+        Determinant = calcDeterminant(matrix);
+        return Determinant;
+    }
+
+    public double[][] getInverse() {
+        Determinant = calcDeterminant(matrix);
+        calcInverse();
+        return inverse;
     }
 
     //operations
@@ -202,6 +211,89 @@ public class Matrix {
 
         return m;
     }
+
+    public void calcInverse() {
+        inverse = new double[row][row];
+        double[][] mm = Adjoint(matrix);
+        for (int i = 0; i < row; i++)
+            for (int j = 0; j < row; j++)
+                inverse[i][j] = (1 / Determinant) * mm[i][j];
+
+    }
+
+    public double[][] Adjoint(double[][] a) {
+        int tms = a.length;
+
+        double[][] m = new double[tms][tms];
+
+        int ii, jj, ia, ja;
+        double det;
+
+        for (int i = 0; i < tms; i++)
+            for (int j = 0; j < tms; j++) {
+                ia = ja = 0;
+
+                double[][] ap = new double[tms - 1][tms - 1];
+
+                for (ii = 0; ii < tms; ii++) {
+                    for (jj = 0; jj < tms; jj++) {
+
+                        if ((ii != i) && (jj != j)) {
+                            ap[ia][ja] = a[ii][jj];
+                            ja++;
+                        }
+
+                    }
+                    if ((ii != i) && (jj != j)) {
+                        ia++;
+                    }
+                    ja = 0;
+                }
+
+                det = calcDeterminant(ap);
+                m[i][j] = (float) Math.pow(-1, i + j) * det;
+            }
+
+        m = Transpose(m);
+
+        return m;
+    }
+
+    public double[][] Transpose(double[][] a) {
+        double[][] m = new double[a[0].length][a.length];
+
+        for (int i = 0; i < a.length; i++)
+            for (int j = 0; j < a[i].length; j++)
+                m[j][i] = a[i][j];
+        return m;
+    }
+    static void getCofactor(int A[][], int temp[][], int p, int q, int n)
+    {
+        int i = 0, j = 0;
+
+        // Looping for each element of the matrix
+        for (int row = 0; row < n; row++)
+        {
+            for (int col = 0; col < n; col++)
+            {
+                // Copying into temporary matrix only those element
+                // which are not in given row and column
+                if (row != p && col != q)
+                {
+                    temp[i][j++] = A[row][col];
+
+                    // Row is filled, so increase row index and
+                    // reset col index
+                    if (j == n - 1)
+                    {
+                        j = 0;
+                        i++;
+                    }
+                }
+            }
+        }
+    }
+
     @Override
     public String toString() {
         StringBuilder out = new StringBuilder();
@@ -232,5 +324,4 @@ public class Matrix {
         }
         return out.toString().trim();
     }
-
 }

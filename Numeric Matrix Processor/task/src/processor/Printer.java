@@ -1,7 +1,7 @@
 package processor;
 
 public class Printer {
-    public static String toArray(double[][] matrix){
+    public static String toArray(double[][] matrix) {
         StringBuilder out = new StringBuilder();
 
         boolean isFloat = false;
@@ -19,9 +19,9 @@ public class Printer {
             for (int j = 0; j < matrix[0].length; j++) {
                 int integer = (int) doubles[j];
                 if (isFloat) {
-                    if (doubles[j] == 0){
+                    if (doubles[j] == 0) {
                         out.append(0).append(" ");
-                    }else{
+                    } else {
                         out.append(String.format("%.2f", doubles[j])).append(" ");
                     }
 

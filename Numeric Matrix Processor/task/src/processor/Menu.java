@@ -66,7 +66,8 @@ public class Menu {
 
     private static int choose() {
         try {
-            return Integer.parseInt(scanner.nextLine().trim());
+            int choice = Integer.parseInt(scanner.nextLine().trim());
+            return choice;
         } catch (IllegalArgumentException e) {
             System.out.println("check input");
             System.out.print("Your choice: ");
